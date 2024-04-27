@@ -1,0 +1,103 @@
+{{ partial "templates.html" . }}
+<!DOCTYPE html>
+<html amp lang="{{ .Site.LanguageCode | default "en" }}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
+{{ with .PrevInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ with .NextInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ if .IsHome }}
+	<link rel="prerender" href="{{ .Site.BaseURL }}">
+{{ end }}
+
+{{ partial "head.html" . }}
+
+	<style amp-custom>
+{{- with resources.Get "main.scss" | toCSS | minify -}}
+	{{- .Content | safeCSS -}}
+{{- end -}}
+{{- partial "style.css" . -}}
+	</style>
+	<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+
+	<script async src="https://cdn.ampproject.org/v0.js"></script>
+{{ if .Site.GoogleAnalytics }}
+	<script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+{{ end }}
+{{ if .HasShortcode "card" }}
+	<script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-1.0.js"></script>
+{{ end }}
+{{ if .HasShortcode "tweet" }}
+	<script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-1.0.js"></script>
+{{ end }}
+{{ if .HasShortcode "gist" }}
+	<script async custom-element="amp-gist" src="https://cdn.ampproject.org/v0/amp-gist-1.0.js"></script>
+{{ end }}
+
+{{ range .AlternativeOutputFormats }}
+	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
+{{ end }}
+	<title>{{ template "title" . }}</title>
+
+{{ partial "head-custom.html" . }}
+</head>
+<body>
+{{ if and .Site.GoogleAnalytics (not .Site.IsServer) }}
+<amp-analytics type="gtag" data-credentials="include">
+	<script type="application/json">
+{
+	"vars" : {
+		"gtag_id": "{{ .Site.GoogleAnalytics }}",
+		"config" : {
+			"{{ .Site.GoogleAnalytics }}": { "groups": "default" }
+		}
+	}
+}
+	</script>
+</amp-analytics>
+{{ end }}
+
+	<header class="masthead clearfix">
+		<div class="container">
+			{{ with .Site.Params.Logo }}
+			<a href="{{ $.Site.BaseURL }}" class="site-avatar">
+				<amp-img src="{{ . }}" width="70" height="70" layout="responsive" alt="Logo"></amp-img>
+			</a>
+			{{ end }}
+
+			<div class="site-info">
+				<h1 class="site-name">
+					<a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+				</h1>
+				{{ with .Site.Params.Description }}
+				<p class="site-description">{{ . }}</p>
+				{{ end }}
+			</div>
+
+			{{ with .Site.Menus.main }}
+			<nav>
+				{{ range .ByWeight }}
+				<a href="{{ .URL }}">{{ .Name }}</a>
+				{{ end }}
+			</nav>
+			{{ end }}
+		</div>
+	</header>
+
+	<main class="container">
+		{{ block "main" . }}{{ end }}
+	</main>
+
+	<footer class="wrapper-footer">
+		{{ partial "links.html" . }}
+
+		<p>{{ with .Site.Copyright }}{{ . | safeHTML }}{{ else }}&copy; {{ .Site.Title }}{{ end }}</p>
+	</footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{{ partial "templates.html" . }}
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "en" }}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+{{ with .PrevInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ with .NextInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ if .IsHome }}
+	<link rel="prerender" href="{{ .Site.BaseURL }}">
+{{ end }}
+
+	<link rel="canonical" href="{{ .Permalink }}">
+{{ range .AlternativeOutputFormats }}
+	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
+{{ end }}
+
+{{ partial "head.html" . }}
+
+	<style>
+{{- with resources.Get "main.scss" | toCSS | minify -}}
+	{{- .Content | safeCSS -}}
+{{- end -}}
+
+{{- partial "style.css" . -}}
+	</style>
+
+	<title>{{ template "title" . }}</title>
+
+{{ partial "head-custom.html" . }}
+{{ partial "googleanalytics.html" . }}
+</head>
+<body>
+	<header class="masthead clearfix">
+		<div class="container">
+			{{ with .Site.Params.Logo }}
+			<a href="{{ $.Site.BaseURL }}" class="site-avatar" alt="Logo">
+				<img src="{{ . }}">
+			</a>
+			{{ end }}
+
+			<div class="site-info">
+				<h1 class="site-name">
+					<a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
+				</h1>
+				{{ with .Site.Params.Description }}
+				<p class="site-description">{{ . }}</p>
+				{{ end }}
+			</div>
+
+			{{ with .Site.Menus.main }}
+			<nav>
+				{{ range .ByWeight }}
+				<a href="{{ .URL }}">{{ .Name }}</a>
+				{{ end }}
+			</nav>
+			{{ end }}
+		</div>
+	</header>
+
+	<main class="container">
+		{{ block "main" . }}{{ end }}
+	</main>
+
+	<footer class="wrapper-footer">
+		{{ partial "links.html" . }}
+
+		<p>{{ with .Site.Copyright }}{{ . | safeHTML }}{{ else }}&copy; {{ .Site.Title }}{{ end }}</p>
+	</footer>
+{{ if .HasShortcode "tweet" }}
+	<script async="" src="https://platform.twitter.com/widgets.js"></script>
+{{ end }}
+</body>
+</html>

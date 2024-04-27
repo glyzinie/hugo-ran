@@ -1,0 +1,52 @@
+{{/* JSON-LD */}}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+{{ if .IsHome }}
+	"@type": "WebSite",
+	"name": "{{ template "title" . }}",
+	"url": {{ .Permalink }},
+{{ else if .IsPage }}
+	"@type": "BlogPosting",
+	"mainEntityOfPage": {
+		"@type": "WebPage",
+		"@id": {{ .Site.BaseURL }}
+	},
+	"headLine": "{{ .Title }}",
+	"image": [
+		{{ template "thumb" . }}
+	],
+{{ end }}
+	"inLanguage": "{{ .Site.LanguageCode | default "en" }}",
+	"description": "{{ template "description" . }}",
+	"author": {
+		"@type": "Person",
+		"name": "{{ .Site.Params.Author.Name | default .Site.Title }}",
+		"url": {{ .Site.Params.Author.Url | default .Site.BaseURL }},
+		"sameAs": [
+{{ with .Site.Params.Author.twitter }}"https://twitter.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.github }}"https://github.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.stackoverflow }}"http://stackoverflow.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.linkedin }}"https://www.linkedin.com/in/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.facebook }}"https://www.facebook.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.instagram }}"https://instagram.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.pinterest }}"https://www.pinterest.com/{{ . }}",{{ end }}
+{{ with .Site.Params.Author.tumblr }}"https://{{ . }}.tumblr.com",{{ end }}
+{{ with .Site.Params.Author.youtube }}"https://www.youtube.com/{{ . }}"{{ end }}
+		]
+	},
+	"publisher": {
+		"@type": "Organization",
+		"name": "{{ .Site.Title }}",
+{{ with .Site.Params.Logo }}
+		"logo": {
+			"@type": "ImageObject",
+			"url": {{ . | absURL }}
+		}
+{{ end }}
+	},
+	"dateCreated": {{ .Date.Format "2006-01-02T15:04:05-07:00" }},
+	"datePublished": {{ .PublishDate.Format "2006-01-02T15:04:05-07:00" }},
+	"dateModified": {{ .Lastmod.Format "2006-01-02T15:04:05-07:00" }}
+}
+</script>

@@ -1,0 +1,12 @@
+name = "Ran"
+license = "MIT"
+licenselink = "https://github.com/glyzinie/hugo-ran/blob/main/LICENSE"
+homepage = "https://github.com/glyzinie/hugo-ran"
+description = ""
+tags = []
+features = []
+min_version = '0.57.2'
+
+[author]
+name = "Wis"
+homepage = "https://glyzinie.net"

@@ -1,0 +1,20 @@
+<link rel="icon" href="{{ template "favicon" . }}">
+<link rel="apple-touch-icon" href="{{ template "favicon" . }}">
+
+<meta name="theme-color" content="#263238">
+<meta name="generator" content="Hugo {{ hugo.Version }}">
+
+{{/* OGP */}}
+<meta name="description" content="{{ template "description" . }}">
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:title" content="{{ template "title" . }}">
+<meta property="og:description" content="{{ template "description" . }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ template "thumb" . }}">
+
+<meta name="twitter:card" content="summary_large_image">
+{{ with .Site.Params.Author.Twitter }}
+<meta name="twitter:site" content="@{{ . }}">
+{{ end }}
+
+{{ partial "json-ld.html" . }}
