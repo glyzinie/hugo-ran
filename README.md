@@ -56,12 +56,6 @@ codeFences = false
 
 ## Shortcodes
 
-### card
-Use [はてなブログカード](https://staff.hatenablog.com/entry/2014/09/05/143600)
-```markdown
-{{< card "https://example.com" >}}
-```
-
 ### img
 Basic usage
 ```markdown

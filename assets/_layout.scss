@@ -1,17 +1,6 @@
-@charset "utf-8";
-/*********************/
-/* LAYOUT / SECTIONS */
-/*********************/
-
 .masthead {
 	padding: 20px 0;
 	border-bottom: 1px solid #eee;
-}
-
-@media screen and (max-width: 640px) {
-	.masthead {
-		text-align: center;
-	}
 }
 
 .site-avatar {
@@ -19,16 +8,9 @@
 	width: 70px;
 	height: 70px;
 	margin-right: 15px;
+
 	img, amp-img {
 		border-radius: 5px;
-	}
-}
-
-@media screen and (max-width: 640px) {
-	.site-avatar {
-		float: none;
-		display: block;
-		margin: 0 auto;
 	}
 }
 
@@ -36,19 +18,11 @@
 	float: left;
 }
 
-@media screen and (max-width: 640px) {
-	.site-info {
-		float: none;
-		display: block;
-		margin: 0 auto;
-	}
-}
-
 .site-name {
 	margin: 0;
 	color: #333;
 	cursor: pointer;
-	font-family: helvetica, arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	font-weight: 300;
 	font-size: 28px;
 	letter-spacing: 1px;
@@ -61,15 +35,33 @@
 }
 
 @media screen and (max-width: 640px) {
+	.masthead {
+		text-align: center;
+	}
+
+	.site-avatar {
+		float: none;
+		display: block;
+		margin: 0 auto;
+	}
+
+	.site-info {
+		float: none;
+		display: block;
+		margin: 0 auto;
+	}
+
 	.site-description {
 		margin: 3px 0;
 	}
 }
 
+// ----- ----- -----
+
 nav {
 	float: right;
 	margin-top: 23px;
-	font-family: helvetica, arial, sans-serif;
+	font-family: Helvetica, Arial, sans-serif;
 	font-size: 18px;
 	a {
 		margin-left: 20px;
@@ -86,6 +78,7 @@ nav {
 		margin-top: 9px;
 		display: block;
 		font-size: 16px;
+
 		a {
 			margin: 0 10px;
 			color: #4183C4;
@@ -106,16 +99,19 @@ nav {
 	h1 {
 		margin-bottom: .1em;
 	}
+
 	.date {
 		font-weight: 300;
 		font-size: 14px;
 		color: #868e96;
 		margin-right: 3px;
 	}
+
 	.tag {
 		display: inline;
 		font-weight: 300;
 		font-size: 14px;
+
 		li {
 			display: inline;
 			margin: 0;
@@ -148,13 +144,16 @@ nav {
 	padding: 2em 0;
 	width: 100%;
 	display: inline-block;
+
 	> {
 		.left {
 			float: left;
 		}
+
 		.right {
 			float: right;
 		}
+
 		.left, .right {
 			width: 50%;
 			a {
@@ -176,22 +175,26 @@ nav {
 // Tags
 .tags > {
 	.label > li {
-		&:before {
-			content: "";
-		}
 		margin: 0;
 		font-size: 14px;
 		font-weight: 300;
 		display: inline;
+
+		&:before {
+			content: "";
+		}
+
 		> a {
 			display: inline-block;
 			margin: 1px;
 			color: #343a40;
 			background-color: #e9ecef;
 			border-radius: 3px;
+
 			span {
 				float: left;
 				padding: .5px 5px;
+
 				&.count {
 					background-color: #dee2e6;
 					border-radius: 0 3px 3px 0;
@@ -211,23 +214,28 @@ nav {
 footer {
 	padding: 10px 0 0;
 	text-align: center;
+
 	p {
 		font-size: 14px;
 	}
+
 	.svg-icon {
 		display: block;
 		font-size: 0;
 		list-style: none;
 		margin: 0;
 		text-align: center;
+
 		li {
 			display: inline-block;
 			margin: 10px;
 		}
+
 		svg {
 			height: 30px;
 			width: 30px;
 		}
+
 		em {
 			font-size: 18px;
 			line-height: 1.5;
@@ -255,7 +263,8 @@ pre {
 	border-radius: 3px;
 	margin: 1em 0;
 	overflow: auto;
-	&::scrollbar, &::-webkit-scrollbar {
+
+	&::scrollbar {
 		display: none;
 	}
 }
@@ -282,6 +291,7 @@ code {
 
 		> li {
 			margin: 0;
+
 			&:before {
 				content: none;
 				list-style: none;
