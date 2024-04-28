@@ -29,11 +29,14 @@
 {{ if .Site.GoogleAnalytics }}
 	<script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
 {{ end }}
+{{ if .HasShortcode "gist" }}
+	<script async custom-element="amp-gist" src="https://cdn.ampproject.org/v0/amp-gist-1.0.js"></script>
+{{ end }}
 {{ if .HasShortcode "twitter" }}
 	<script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-1.0.js"></script>
 {{ end }}
-{{ if .HasShortcode "gist" }}
-	<script async custom-element="amp-gist" src="https://cdn.ampproject.org/v0/amp-gist-1.0.js"></script>
+{{ if .HasShortcode "youtube" }}
+	<script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-1.0.js"></script>
 {{ end }}
 
 {{ range .AlternativeOutputFormats }}

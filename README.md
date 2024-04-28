@@ -4,7 +4,8 @@ This theme is based on "[Jekyll Now](https://github.com/barryclark/jekyll-now)".
 
 ## Features
 - Responsive design
-- Support [utterances](https://utteranc.es/)
+- Support: AMP HTML
+
 
 ## `hugo.toml` example
 ```toml
