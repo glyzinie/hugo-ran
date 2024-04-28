@@ -4,7 +4,7 @@ This theme is based on "[Jekyll Now](https://github.com/barryclark/jekyll-now)".
 
 ## Features
 - Responsive design
-- Support: AMP HTML
+- AMP HTML
 
 
 ## `hugo.toml` example
@@ -38,6 +38,10 @@ youtube = ""
 weight = 1
 name = "About"
 url = "/about"
+
+[[menus.main]]
+url = "/tags/"
+name = "Tag"
 
 [taxonomies]
 tag = "tags"

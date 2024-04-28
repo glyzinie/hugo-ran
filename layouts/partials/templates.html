@@ -1,21 +1,4 @@
-{{ define "title" }}
-	{{- if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title -}}
-{{ end }}
-
-{{ define "description" }}
-	{{- if .IsPage -}}
-		{{- .Params.Description | default (.Summary | plainify) -}}
-	{{- else -}}
-		{{- with .Site.Params.description -}}
-			{{- . -}}
-		{{- end -}}
-	{{- end -}}
-{{ end }}
-
-{{ define "thumb" }}
-	{{- absURL (.Params.Thumbnail | default (.Site.Params.Thumbnail | default "img/thumb.png")) -}}
-{{ end }}
-
-{{ define "favicon" }}
-	{{- absURL (.Site.Params.Favicon | default (.Site.Params.Logo | default "img/favicon.png")) -}}
-{{ end }}
+{{ partial "templates/title.html" . }}
+{{ partial "templates/description.html" . }}
+{{ partial "templates/favicon.html" . }}
+{{ partial "templates/thumb.html" . }}

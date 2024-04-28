@@ -1,0 +1,4 @@
+{{ define "thumb" }}
+	{{- absURL (.Params.Thumbnail | default (.Site.Params.Thumbnail | default "img/thumb.png")) -}}
+{{ end }}
+

@@ -20,7 +20,17 @@
 	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
 {{ end }}
 
-{{ partial "head.html" . }}
+	<link rel="icon" href="{{ template "favicon" . }}">
+	<meta name="description" content="{{ template "description" . }}">
+	<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+	<meta property="og:title" content="{{ template "title" . }}">
+	<meta property="og:description" content="{{ template "description" . }}">
+	<meta property="og:url" content="{{ .Permalink }}">
+	<meta property="og:image" content="{{ template "thumb" . }}">
+	<meta name="twitter:card" content="summary_large_image">
+	{{ with .Site.Params.Author.Twitter }}
+	<meta name="twitter:site" content="@{{ . }}">
+	{{ end }}
 
 	<style>
 {{- with resources.Get "main.scss" | toCSS | minify -}}
@@ -30,7 +40,8 @@
 
 	<title>{{ template "title" . }}</title>
 
-{{ partial "head-custom.html" . }}
+	{{ partial "json-ld.html" . }}
+
 {{ partial "googleanalytics.html" . }}
 </head>
 <body>

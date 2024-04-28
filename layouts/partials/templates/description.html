@@ -1,0 +1,9 @@
+{{ define "description" }}
+	{{- if .IsPage -}}
+		{{- .Params.Description | default (.Summary | plainify) -}}
+	{{- else -}}
+		{{- with .Site.Params.description -}}
+			{{- . -}}
+		{{- end -}}
+	{{- end -}}
+{{ end }}
