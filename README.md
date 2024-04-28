@@ -33,12 +33,6 @@ pinterest = ""
 tumblr = ""
 youtube = ""
 
-[params.utterances]
-# https://utteranc.es/
-repo = "owner/repo"
-issueTerm = "pathname"
-theme = "github-light"
-
 [[menus.main]] # Enable Menu Bar
 weight = 1
 name = "About"
@@ -52,17 +46,4 @@ page = ["HTML", "AMP"] # Enable AMP HTML
 
 [markup.highlight]
 codeFences = false
-```
-
-## Shortcodes
-
-### img
-Basic usage
-```markdown
-{{< img src="example.png" h="100" w="100" >}}
-```
-
-Extended usage
-```markdown
-{{< img src="example.png" h="100" w="100" caption="Description" href="https://example.com" >}}
 ```

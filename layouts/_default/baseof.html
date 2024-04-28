@@ -26,8 +26,6 @@
 {{- with resources.Get "main.scss" | toCSS | minify -}}
 	{{- .Content | safeCSS -}}
 {{- end -}}
-
-{{- partial "style.css" . -}}
 	</style>
 
 	<title>{{ template "title" . }}</title>
@@ -72,8 +70,25 @@
 
 		<p>{{ with .Site.Copyright }}{{ . | safeHTML }}{{ else }}&copy; {{ .Site.Title }}{{ end }}</p>
 	</footer>
-{{ if .HasShortcode "tweet" }}
-	<script async="" src="https://platform.twitter.com/widgets.js"></script>
+{{ if .HasShortcode "twitter" }}
+<script>
+window.twttr = (function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0],
+	t = window.twttr || {};
+	if (d.getElementById(id)) return t;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "https://platform.twitter.com/widgets.js";
+	fjs.parentNode.insertBefore(js, fjs);
+
+	t._e = [];
+	t.ready = function(f) {
+		t._e.push(f);
+	};
+
+	return t;
+}(document, "script", "twitter-wjs"));
+</script>
 {{ end }}
 </body>
 </html>

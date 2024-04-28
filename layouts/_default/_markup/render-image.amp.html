@@ -1,0 +1,22 @@
+{{ $url := .Destination }}
+
+{{ if strings.HasPrefix $url "http" }}
+	{{ with resources.GetRemote $url }}
+		{{ if .Err }}
+			<p>{{ if eq .Err "source url is empty" }}Source URL is empty.{{ else }}Image not available.{{ end }}</p>
+		{{ else }}
+			<amp-img src="{{ $url }}" width="{{ .Width }}" height="{{ .Height }}" alt="" layout="responsive">
+		{{ end }}
+	{{ else }}
+		<p>Unable to get remote resource {{ $url }}</p>
+	{{ end }}
+{{ else }}
+	{{ $resource := resources.Get $url }}
+	{{ if $resource }}
+		<amp-img src="{{ $resource.Permalink }}" width="{{ $resource.Width }}" height="{{ $resource.Height }}" alt="" layout="responsive">
+	{{ else }}
+		<p>Internal image not found: {{ $url }}</p>
+	{{ end }}
+{{ end }}
+
+
