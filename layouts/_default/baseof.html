@@ -32,11 +32,7 @@
 	<meta name="twitter:site" content="@{{ . }}">
 	{{ end }}
 
-	<style>
-{{- with resources.Get "main.scss" | toCSS | minify -}}
-	{{- .Content | safeCSS -}}
-{{- end -}}
-	</style>
+	<style>{{ with resources.Get "main.scss" | toCSS | minify }}{{ .Content | safeCSS }}{{ end }}</style>
 
 	<title>{{ template "title" . }}</title>
 
