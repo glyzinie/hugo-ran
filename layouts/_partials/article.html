@@ -1,0 +1,40 @@
+{{- $page := .page -}}
+{{- $isAMP := .isAMP -}}
+<article class="post">
+{{ if $isAMP }}	<h1>
+		<a href="{{ $page.Permalink }}">{{ $page.Title }}</a>
+	</h1>{{ else }}	<h1>{{ $page.Title }}</h1>{{ end }}
+
+	<div class="meta">
+		<time class="date" datetime="{{ $page.Date.Format "2006-01-02T15:04:05-07:00" | html }}">
+			{{ $page.Date.Format ( default $page.Site.Params.dateformat "Jan 2, 2006") }}
+		</time>
+
+		{{ with $page.Params.tags }}
+		<ul class="tag">
+			{{ range . }}
+			<li><a href="{{ "tags" | absURL }}/{{ . | urlize }}">{{ . }}</a></li>
+			{{ end }}
+		</ul>
+		{{ end }}
+	</div>
+
+{{ if $page.Params.toc }}{{ $page.TableOfContents }}{{ end }}
+
+	<div class="entry">
+		{{ $page.Content }}
+	</div>
+</article>
+
+<div class="pagination">
+	{{ with $page.NextInSection }}
+	<span class="left">
+		<a href="{{ .Permalink }}">&#12298; {{ .Title }}</a>
+	</span>
+	{{ end }}
+	{{ with $page.PrevInSection }}
+	<span class="right">
+		<a href="{{ .Permalink }}">{{ .Title }} &#12299;</a>
+	</span>
+	{{ end }}
+</div>

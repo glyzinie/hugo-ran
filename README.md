@@ -33,6 +33,13 @@ Apply the same moves to `.amp.html` variants. The metadata helpers in
 `layouts/_partials/templates/` return strings and are called with `partial`,
 for example `{{ partial "templates/title.html" . }}`, instead of global named templates.
 
+HTML and AMP share `head/metadata.html`, `head/resource-hints.html`, `header.html`,
+`footer.html`, and `article.html` under `layouts/_partials/`. The header and article
+partials receive a dictionary with `page` (the current page) and `isAMP` (a boolean);
+the other shared partials receive the current page directly. Existing metadata,
+JSON-LD, social-link, and comment partials keep their page context when overridden.
+Format-specific scripts and styles remain in the respective base templates.
+
 ### Compatibility notes
 
 - In Hugo 0.166.0, the AMP-only `gist`, `twitter`, and `youtube` shortcode

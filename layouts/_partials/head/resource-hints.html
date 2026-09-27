@@ -1,0 +1,9 @@
+{{ with .PrevInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ with .NextInSection }}
+	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
+{{ end }}
+{{ if .IsHome }}
+	<link rel="prerender" href="{{ .Site.BaseURL }}">
+{{ end }}

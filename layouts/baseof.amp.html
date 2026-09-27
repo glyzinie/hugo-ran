@@ -5,27 +5,9 @@
 	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
     <link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
-{{ with .PrevInSection }}
-	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
-{{ end }}
-{{ with .NextInSection }}
-	<link rel="prefetch" href="{{ .Permalink }}" crossorigin="use-credentials">
-{{ end }}
-{{ if .IsHome }}
-	<link rel="prerender" href="{{ .Site.BaseURL }}">
-{{ end }}
+{{ partial "head/resource-hints.html" . }}
 
-	<link rel="icon" href="{{ partial "templates/favicon.html" . }}">
-	<meta name="description" content="{{ partial "templates/description.html" . }}">
-	<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-	<meta property="og:title" content="{{ partial "templates/title.html" . }}">
-	<meta property="og:description" content="{{ partial "templates/description.html" . }}">
-	<meta property="og:url" content="{{ .Permalink }}">
-	<meta property="og:image" content="{{ partial "templates/thumb.html" . }}">
-	<meta name="twitter:card" content="summary_large_image">
-	{{ with .Site.Params.Author.Twitter }}
-	<meta name="twitter:site" content="@{{ . }}">
-	{{ end }}
+	{{ partial "head/metadata.html" . }}
 
 	<style amp-custom>
 	{{ with resources.Get "main.scss" | css.Sass (dict "transpiler" "dartsass") | minify }}{{ .Content | safeCSS }}{{ end }}
@@ -69,41 +51,12 @@
 </amp-analytics>
 {{ end }}
 
-	<header class="masthead clearfix">
-		<div class="container">
-			{{ with .Site.Params.Logo }}
-			<a href="{{ $.Site.BaseURL }}" class="site-avatar">
-				<amp-img src="{{ . }}" width="70" height="70" layout="responsive" alt="Logo"></amp-img>
-			</a>
-			{{ end }}
-
-			<div class="site-info">
-				<h1 class="site-name">
-					<a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
-				</h1>
-				{{ with .Site.Params.Description }}
-				<p class="site-description">{{ . }}</p>
-				{{ end }}
-			</div>
-
-			{{ with .Site.Menus.main }}
-			<nav>
-				{{ range .ByWeight }}
-				<a href="{{ .URL }}">{{ .Name }}</a>
-				{{ end }}
-			</nav>
-			{{ end }}
-		</div>
-	</header>
+	{{ partial "header.html" (dict "page" . "isAMP" true) }}
 
 	<main class="container">
 		{{ block "main" . }}{{ end }}
 	</main>
 
-	<footer class="wrapper-footer">
-		{{ partial "links.html" . }}
-
-		<p>{{ with .Site.Copyright }}{{ . | safeHTML }}{{ else }}&copy; {{ .Site.Title }}{{ end }}</p>
-	</footer>
+	{{ partial "footer.html" . }}
 </body>
 </html>
