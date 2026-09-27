@@ -8,7 +8,11 @@ This theme is based on "[Jekyll Now](https://github.com/barryclark/jekyll-now)".
 
 ## Requirements
 
-Hugo **0.146.0 or later**, with Extended support to compile the theme's SCSS.
+Hugo **0.146.0 or later** and [Dart Sass](https://gohugo.io/functions/css/sass/#dart-sass),
+with the `sass` executable available on `PATH` in both local and CI environments.
+The theme uses Dart Sass to compile its SCSS for both HTML and AMP output.
+
+Shared colors and responsive breakpoints are defined in `assets/_tokens.scss`.
 
 ## Template overrides
 

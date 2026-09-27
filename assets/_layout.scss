@@ -1,3 +1,5 @@
+@use "tokens";
+
 .masthead {
 	padding: 20px 0;
 	border-bottom: 1px solid #eee;
@@ -8,10 +10,6 @@
 	width: 70px;
 	height: 70px;
 	margin-right: 15px;
-
-	img, amp-img {
-		border-radius: 5px;
-	}
 }
 
 .site-info {
@@ -20,7 +18,7 @@
 
 .site-name {
 	margin: 0;
-	color: #333;
+	color: tokens.$color-heading;
 	cursor: pointer;
 	font-family: Helvetica, Arial, sans-serif;
 	font-weight: 300;
@@ -34,7 +32,7 @@
 	font-size: 16px;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: tokens.$breakpoint-mobile) {
 	.masthead {
 		text-align: center;
 	}
@@ -65,14 +63,14 @@ nav {
 	font-size: 18px;
 	a {
 		margin-left: 20px;
-		color: #333;
+		color: tokens.$color-heading;
 		text-align: right;
 		font-weight: 300;
 		letter-spacing: 1px;
 	}
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: tokens.$breakpoint-mobile) {
 	nav {
 		float: none;
 		margin-top: 9px;
@@ -88,7 +86,7 @@ nav {
 
 .posts > .post {
 	padding-bottom: 2em;
-	border-bottom: 1px solid #f1f3f5;
+	border-bottom: 1px solid tokens.$color-surface;
 	&:last-child {
 		padding-bottom: 1em;
 		border-bottom: none;
@@ -103,7 +101,7 @@ nav {
 	.date {
 		font-weight: 300;
 		font-size: 14px;
-		color: #868e96;
+		color: tokens.$color-muted;
 		margin-right: 3px;
 	}
 
@@ -123,8 +121,8 @@ nav {
 			> a {
 				margin: 3px 3px 3px 0;
 				padding: .5px 4px;
-				color: #343a40;
-				background-color: #e9ecef;
+				color: tokens.$color-text;
+				background-color: tokens.$color-border;
 				border-radius: 3px;
 			}
 		}
@@ -157,7 +155,7 @@ nav {
 		.left, .right {
 			width: 50%;
 			a {
-				color: #868e96;
+				color: tokens.$color-muted;
 				&:hover, &:focus {
 					color: #495057;
 				}
@@ -166,7 +164,7 @@ nav {
 	}
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: tokens.$breakpoint-mobile) {
 	.pagination {
 		font-size: 14px;
 	}
@@ -187,8 +185,8 @@ nav {
 		> a {
 			display: inline-block;
 			margin: 1px;
-			color: #343a40;
-			background-color: #e9ecef;
+			color: tokens.$color-text;
+			background-color: tokens.$color-border;
 			border-radius: 3px;
 
 			span {
@@ -196,7 +194,7 @@ nav {
 				padding: .5px 5px;
 
 				&.count {
-					background-color: #dee2e6;
+					background-color: tokens.$color-border-strong;
 					border-radius: 0 3px 3px 0;
 				}
 			}
@@ -206,9 +204,9 @@ nav {
 
 .wrapper-footer {
 	margin-top: 50px;
-	border-top: 1px solid #e9ecef;
-	border-bottom: 1px solid #e9ecef;
-	background-color: #f1f3f5;
+	border-top: 1px solid tokens.$color-border;
+	border-bottom: 1px solid tokens.$color-border;
+	background-color: tokens.$color-surface;
 }
 
 footer {
@@ -259,14 +257,10 @@ pre {
 	font-size: 14px;
 	background: #f8f9fa;
 	padding: .45em .45em .45em .625em;
-	border: 1px solid #dee2e6;
+	border: 1px solid tokens.$color-border-strong;
 	border-radius: 3px;
 	margin: 1em 0;
 	overflow: auto;
-
-	&::scrollbar {
-		display: none;
-	}
 }
 
 code {
@@ -309,8 +303,6 @@ code {
 			}
 
 			ul {
-				padding-left: 1rem;
-
 				> li {
 					list-style-type: disc;
 					font-weight: 500;
@@ -324,12 +316,12 @@ code {
 	}
 }
 
-@media (max-width: 768px) {
+@media (max-width: tokens.$breakpoint-toc) {
 	#TableOfContents {
 		padding: 1rem;
 
 		> ul {
-			width: 100%
+			width: 100%;
 		}
 	}
 }

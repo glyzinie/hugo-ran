@@ -1,7 +1,6 @@
 /* Apply a natural box layout model to all elements, but allowing components to change */
 html {
 	box-sizing: border-box;
-	font-size: 100%; /* Respect the user's set font size in the browser */
 }
 *, *:before, *:after {
 	box-sizing: inherit;
@@ -42,10 +41,4 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
-}
-
-/* Set base line-height to a normal value */
-body {
-	line-height: 1.5; /* More readable line height */
-	font-family: Arial, sans-serif; /* Set a default web-safe font */
 }

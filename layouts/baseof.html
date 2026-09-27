@@ -31,7 +31,7 @@
 	<meta name="twitter:site" content="@{{ . }}">
 	{{ end }}
 
-	<style>{{ with resources.Get "main.scss" | css.Sass | minify }}{{ .Content | safeCSS }}{{ end }}</style>
+	<style>{{ with resources.Get "main.scss" | css.Sass (dict "transpiler" "dartsass") | minify }}{{ .Content | safeCSS }}{{ end }}</style>
 
 	<title>{{ partial "templates/title.html" . }}</title>
 
