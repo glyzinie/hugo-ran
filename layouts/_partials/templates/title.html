@@ -1,0 +1,5 @@
+{{- $title := .Site.Title -}}
+{{- if not .IsHome -}}
+	{{- $title = printf "%s | %s" .Title $title -}}
+{{- end -}}
+{{- return $title -}}

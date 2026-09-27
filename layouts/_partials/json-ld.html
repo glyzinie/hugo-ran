@@ -1,0 +1,47 @@
+{{- $authorParams := .Site.Params.Author | default dict -}}
+{{- $sameAs := slice -}}
+{{- range $service, $url := dict
+	"twitter" "https://twitter.com/%s"
+	"github" "https://github.com/%s"
+	"stackoverflow" "http://stackoverflow.com/%s"
+	"linkedin" "https://www.linkedin.com/in/%s"
+	"facebook" "https://www.facebook.com/%s"
+	"instagram" "https://instagram.com/%s"
+	"pinterest" "https://www.pinterest.com/%s"
+	"tumblr" "https://%s.tumblr.com"
+	"youtube" "https://www.youtube.com/%s"
+-}}
+	{{- with index $authorParams $service -}}
+		{{- $sameAs = $sameAs | append (printf $url .) -}}
+	{{- end -}}
+{{- end -}}
+{{- $author := dict
+	"@type" "Person"
+	"name" ($authorParams.name | default .Site.Title)
+	"url" ($authorParams.url | default .Site.BaseURL)
+	"sameAs" $sameAs
+-}}
+{{- $publisher := dict "@type" "Organization" "name" .Site.Title -}}
+{{- with .Site.Params.Logo -}}
+	{{- $publisher = merge $publisher (dict "logo" (dict "@type" "ImageObject" "url" (absURL .))) -}}
+{{- end -}}
+{{- $schema := dict
+	"@context" "https://schema.org"
+	"inLanguage" (.Site.LanguageCode | default "en")
+	"description" (partial "templates/description.html" .)
+	"author" $author
+	"publisher" $publisher
+	"datePublished" (.PublishDate.Format "2006-01-02T15:04:05-07:00")
+	"dateModified" (.Lastmod.Format "2006-01-02T15:04:05-07:00")
+-}}
+{{- if .IsHome -}}
+	{{- $schema = merge $schema (dict "@type" "WebSite" "name" .Site.Title "url" .Permalink) -}}
+{{- else if .IsPage -}}
+	{{- $schema = merge $schema (dict
+		"@type" "BlogPosting"
+		"mainEntityOfPage" (dict "@type" "WebPage" "@id" .Site.BaseURL)
+		"headline" .Title
+		"image" (slice (dict "@type" "ImageObject" "url" (partial "templates/thumb.html" .)))
+	) -}}
+{{- end -}}
+<script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>

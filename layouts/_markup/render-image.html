@@ -1,14 +1,14 @@
 {{ $url := .Destination }}
 
 {{ if strings.HasPrefix $url "http" }}
-	{{ with resources.GetRemote $url }}
-		{{ if .Err }}
-			<p>{{ if eq .Err "source url is empty" }}Source URL is empty.{{ else }}Image not available.{{ end }}</p>
-		{{ else }}
+	{{ with try (resources.GetRemote $url) }}
+		{{ with .Err }}
+			<p>Image not available.</p>
+		{{ else with .Value }}
 			<img src="{{ $url }}" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="lazy">
+		{{ else }}
+			<p>Unable to get remote resource {{ $url }}</p>
 		{{ end }}
-	{{ else }}
-		<p>Unable to get remote resource {{ $url }}</p>
 	{{ end }}
 {{ else }}
 	{{ $resource := resources.Get $url }}

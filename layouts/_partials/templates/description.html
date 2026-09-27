@@ -1,0 +1,5 @@
+{{- $description := .Site.Params.description | default "" -}}
+{{- if .IsPage -}}
+	{{- $description = .Params.Description | default (.Summary | plainify) -}}
+{{- end -}}
+{{- return $description -}}

@@ -6,6 +6,38 @@ This theme is based on "[Jekyll Now](https://github.com/barryclark/jekyll-now)".
 - Responsive design
 - AMP HTML
 
+## Requirements
+
+Hugo **0.146.0 or later**, with Extended support to compile the theme's SCSS.
+
+## Template overrides
+
+This theme uses Hugo's [template system introduced in v0.146.0](https://gohugo.io/templates/new-templatesystem-overview/).
+When upgrading a site with custom layouts, update its overrides to match:
+
+| Previous location | New location |
+| --- | --- |
+| `layouts/_default/baseof.html` | `layouts/baseof.html` |
+| `layouts/_default/single.html` | `layouts/page.html` |
+| `layouts/_default/list.html` | `layouts/list.html` |
+| `layouts/_default/tag.terms.html` | `layouts/tags/taxonomy.html` |
+| `layouts/_default/_markup/` | `layouts/_markup/` |
+| `layouts/partials/` | `layouts/_partials/` |
+| `layouts/shortcodes/` | `layouts/_shortcodes/` |
+
+Apply the same moves to `.amp.html` variants. The metadata helpers in
+`layouts/_partials/templates/` return strings and are called with `partial`,
+for example `{{ partial "templates/title.html" . }}`, instead of global named templates.
+
+### Compatibility notes
+
+- In Hugo 0.166.0, the AMP-only `gist`, `twitter`, and `youtube` shortcode
+  templates are also selected for HTML output. This also occurs with the
+  previous layout structure. Sites using these embeds on that version need
+  explicit HTML shortcode templates as well.
+- Hugo 0.166.0 emits a deprecation warning for `.Site.LanguageCode`. The theme
+  retains this API because its replacement, `.Site.Language.Locale`, is not
+  available in Hugo 0.146.0.
 
 ## `hugo.toml` example
 ```toml

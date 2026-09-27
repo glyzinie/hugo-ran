@@ -1,4 +1,3 @@
-{{ partial "templates.html" . }}
 <!DOCTYPE html>
 <html amp lang="{{ .Site.LanguageCode | default "en" }}">
 <head>
@@ -16,20 +15,20 @@
 	<link rel="prerender" href="{{ .Site.BaseURL }}">
 {{ end }}
 
-	<link rel="icon" href="{{ template "favicon" . }}">
-	<meta name="description" content="{{ template "description" . }}">
+	<link rel="icon" href="{{ partial "templates/favicon.html" . }}">
+	<meta name="description" content="{{ partial "templates/description.html" . }}">
 	<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-	<meta property="og:title" content="{{ template "title" . }}">
-	<meta property="og:description" content="{{ template "description" . }}">
+	<meta property="og:title" content="{{ partial "templates/title.html" . }}">
+	<meta property="og:description" content="{{ partial "templates/description.html" . }}">
 	<meta property="og:url" content="{{ .Permalink }}">
-	<meta property="og:image" content="{{ template "thumb" . }}">
+	<meta property="og:image" content="{{ partial "templates/thumb.html" . }}">
 	<meta name="twitter:card" content="summary_large_image">
 	{{ with .Site.Params.Author.Twitter }}
 	<meta name="twitter:site" content="@{{ . }}">
 	{{ end }}
 
 	<style amp-custom>
-	{{ with resources.Get "main.scss" | toCSS | minify }}{{ .Content | safeCSS }}{{ end }}
+	{{ with resources.Get "main.scss" | css.Sass | minify }}{{ .Content | safeCSS }}{{ end }}
 	</style>
 	<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
 
@@ -50,12 +49,12 @@
 {{ range .AlternativeOutputFormats }}
 	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
 {{ end }}
-	<title>{{ template "title" . }}</title>
+	<title>{{ partial "templates/title.html" . }}</title>
 
 	{{ partial "json-ld.html" . }}
 </head>
 <body>
-{{ if and .Site.Config.Services.GoogleAnalytics.ID (not .Site.IsServer) }}
+{{ if and .Site.Config.Services.GoogleAnalytics.ID (not hugo.IsServer) }}
 <amp-analytics type="gtag" data-credentials="include">
 	<script type="application/json">
 {

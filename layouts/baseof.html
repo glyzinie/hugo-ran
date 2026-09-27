@@ -1,4 +1,3 @@
-{{ partial "templates.html" . }}
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode | default "en" }}">
 <head>
@@ -20,21 +19,21 @@
 	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
 {{ end }}
 
-	<link rel="icon" href="{{ template "favicon" . }}">
-	<meta name="description" content="{{ template "description" . }}">
+	<link rel="icon" href="{{ partial "templates/favicon.html" . }}">
+	<meta name="description" content="{{ partial "templates/description.html" . }}">
 	<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
-	<meta property="og:title" content="{{ template "title" . }}">
-	<meta property="og:description" content="{{ template "description" . }}">
+	<meta property="og:title" content="{{ partial "templates/title.html" . }}">
+	<meta property="og:description" content="{{ partial "templates/description.html" . }}">
 	<meta property="og:url" content="{{ .Permalink }}">
-	<meta property="og:image" content="{{ template "thumb" . }}">
+	<meta property="og:image" content="{{ partial "templates/thumb.html" . }}">
 	<meta name="twitter:card" content="summary_large_image">
 	{{ with .Site.Params.Author.Twitter }}
 	<meta name="twitter:site" content="@{{ . }}">
 	{{ end }}
 
-	<style>{{ with resources.Get "main.scss" | toCSS | minify }}{{ .Content | safeCSS }}{{ end }}</style>
+	<style>{{ with resources.Get "main.scss" | css.Sass | minify }}{{ .Content | safeCSS }}{{ end }}</style>
 
-	<title>{{ template "title" . }}</title>
+	<title>{{ partial "templates/title.html" . }}</title>
 
 	{{ partial "json-ld.html" . }}
 

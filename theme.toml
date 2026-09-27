@@ -5,7 +5,7 @@ homepage = "https://github.com/glyzinie/hugo-ran"
 description = ""
 tags = []
 features = []
-min_version = '0.57.2'
+min_version = '0.146.0'
 
 [author]
 name = "Wis"
