@@ -1,20 +1,27 @@
-{{ $url := .Destination }}
-
-{{ if strings.HasPrefix $url "http" }}
-	{{ with try (resources.GetRemote $url) }}
-		{{ with .Err }}
-			<p>Image not available.</p>
-		{{ else with .Value }}
-			<amp-img src="{{ $url }}" width="{{ .Width }}" height="{{ .Height }}" alt="" layout="responsive"></amp-img>
-		{{ else }}
-			<p>Unable to get remote resource {{ $url }}</p>
-		{{ end }}
-	{{ end }}
-{{ else }}
-	{{ $resource := resources.Get $url }}
-	{{ if $resource }}
-		<amp-img src="{{ $resource.Permalink }}" width="{{ $resource.Width }}" height="{{ $resource.Height }}" alt="" layout="responsive"></amp-img>
-	{{ else }}
-		<p>Internal image not found: {{ $url }}</p>
-	{{ end }}
-{{ end }}
+{{- $page := .Page -}}
+{{- with .PageInner -}}{{- $page = . -}}{{- end -}}
+{{- $attributes := .Attributes | default (dict) -}}
+{{- $explicitWidth := index $attributes "width" | default "" -}}
+{{- $explicitHeight := index $attributes "height" | default "" -}}
+{{- $hasExplicitDimensions := and (findRE `^[1-9][0-9]*$` (printf "%v" $explicitWidth)) (findRE `^[1-9][0-9]*$` (printf "%v" $explicitHeight)) -}}
+{{- $probeRemote := true -}}
+{{- if or $hasExplicitDimensions
+  (and (isset $page.Site.Params "remoteimagedimensions") (eq (index $page.Site.Params "remoteimagedimensions") false))
+  (and (isset $page.Params "remoteimagedimensions") (eq (index $page.Params "remoteimagedimensions") false)) -}}
+  {{- $probeRemote = false -}}
+{{- end -}}
+{{- $image := partial "images/resolve.html" (dict "page" $page "destination" .Destination "probeRemote" $probeRemote) -}}
+{{- $width := $image.width -}}
+{{- $height := $image.height -}}
+{{- /* Authors can provide real dimensions for files Hugo cannot inspect,
+      such as remote images and SVGs. */ -}}
+{{- if $hasExplicitDimensions -}}
+  {{- $width = int $explicitWidth -}}
+  {{- $height = int $explicitHeight -}}
+{{- end -}}
+{{- if and (gt $width 0) (gt $height 0) -}}
+<amp-img src="{{ $image.src }}" alt="{{ .PlainText }}"{{ with .Title }} title="{{ . }}"{{ end }} width="{{ $width }}" height="{{ $height }}" layout="responsive"></amp-img>
+{{- else -}}
+  {{- $label := .PlainText | default .Title | default $image.src -}}
+<a href="{{ $image.src }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ $label }}</a>
+{{- end -}}

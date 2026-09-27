@@ -1,20 +1,38 @@
-{{ $url := .Destination }}
-
-{{ if strings.HasPrefix $url "http" }}
-	{{ with try (resources.GetRemote $url) }}
-		{{ with .Err }}
-			<p>Image not available.</p>
-		{{ else with .Value }}
-			<img src="{{ $url }}" width="{{ .Width }}" height="{{ .Height }}" alt="" loading="lazy">
-		{{ else }}
-			<p>Unable to get remote resource {{ $url }}</p>
-		{{ end }}
-	{{ end }}
-{{ else }}
-	{{ $resource := resources.Get $url }}
-	{{ if $resource }}
-		<img src="{{ $resource.Permalink }}" width="{{ $resource.Width }}" height="{{ $resource.Height }}" alt="" loading="lazy">
-	{{ else }}
-		<p>Internal image not found: {{ $url }}</p>
-	{{ end }}
-{{ end }}
+{{- $page := .Page -}}
+{{- with .PageInner -}}{{- $page = . -}}{{- end -}}
+{{- $attributes := .Attributes | default (dict) -}}
+{{- $explicitWidth := index $attributes "width" | default "" -}}
+{{- $explicitHeight := index $attributes "height" | default "" -}}
+{{- $hasExplicitDimensions := and (findRE `^[1-9][0-9]*$` (printf "%v" $explicitWidth)) (findRE `^[1-9][0-9]*$` (printf "%v" $explicitHeight)) -}}
+{{- $probeRemote := true -}}
+{{- if or $hasExplicitDimensions
+  (and (isset $page.Site.Params "remoteimagedimensions") (eq (index $page.Site.Params "remoteimagedimensions") false))
+  (and (isset $page.Params "remoteimagedimensions") (eq (index $page.Params "remoteimagedimensions") false)) -}}
+  {{- $probeRemote = false -}}
+{{- end -}}
+{{- $image := partial "images/resolve.html" (dict "page" $page "destination" .Destination "probeRemote" $probeRemote) -}}
+{{- $firstImage := false -}}
+{{- if ge hugo.Version "0.160.0" -}}
+  {{- $firstImage = eq .Ordinal 0 -}}
+{{- else -}}
+  {{- /* Ordinal was added in 0.160.0; retain a per-page fallback for older Hugo. */ -}}
+  {{- $countKey := "ran-image-count-html" -}}
+  {{- $imageCount := $page.Store.Get $countKey | default 0 -}}
+  {{- $page.Store.Add $countKey 1 -}}
+  {{- $firstImage = eq $imageCount 0 -}}
+{{- end -}}
+{{- $loading := "lazy" -}}
+{{- if $firstImage -}}{{- $loading = "eager" -}}{{- end -}}
+{{- with index $page.Params "imageloading" -}}
+  {{- if in (slice "lazy" "eager") . -}}{{- $loading = . -}}{{- end -}}
+{{- end -}}
+{{- with index $attributes "loading" -}}
+  {{- if in (slice "lazy" "eager") . -}}{{- $loading = . -}}{{- end -}}
+{{- end -}}
+{{- $width := $image.width -}}
+{{- $height := $image.height -}}
+{{- if $hasExplicitDimensions -}}
+  {{- $width = int $explicitWidth -}}
+  {{- $height = int $explicitHeight -}}
+{{- end -}}
+<img src="{{ $image.src }}" alt="{{ .PlainText }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if and (gt $width 0) (gt $height 0) }} width="{{ $width }}" height="{{ $height }}"{{ end }} loading="{{ $loading }}" decoding="async">

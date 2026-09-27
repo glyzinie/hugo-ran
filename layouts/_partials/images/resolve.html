@@ -1,0 +1,108 @@
+{{- /*
+  Resolve a Markdown or front matter image; remote dimension fetching is opt-in.
+  Input: dict "page" PAGE "destination" URL ["probeRemote" BOOL]
+  Output: src, absoluteURL, width, height, hasDimensions, found.
+  Only confirmed local files (or explicit HTTP(S) URLs) set found=true.
+*/ -}}
+{{- $page := .page -}}
+{{- $destination := .destination | default "" -}}
+{{- $src := $destination -}}
+{{- $absoluteURL := "" -}}
+{{- $width := 0 -}}
+{{- $height := 0 -}}
+{{- $found := false -}}
+{{- $lowerDestination := lower $destination -}}
+
+{{- if or (hasPrefix $lowerDestination "https://") (hasPrefix $lowerDestination "http://") (hasPrefix $destination "//") -}}
+  {{- $absoluteURL = $destination -}}
+  {{- if hasPrefix $destination "//" -}}
+    {{- $absoluteURL = printf "%s:%s" (urls.Parse $page.Site.BaseURL).Scheme $destination -}}
+  {{- end -}}
+  {{- $found = true -}}
+  {{- if .probeRemote -}}
+    {{- with try (resources.GetRemote $absoluteURL) -}}
+      {{- with .Value -}}
+        {{- with try .Width -}}{{- with .Value -}}{{- $width = . -}}{{- end -}}{{- end -}}
+        {{- with try .Height -}}{{- with .Value -}}{{- $height = . -}}{{- end -}}{{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if not (findRE `^[a-zA-Z][a-zA-Z0-9+.-]*:` $destination) -}}
+  {{- /* Keep the original query and fragment on the published URL, but omit
+        them when looking up a file. */ -}}
+  {{- $rawPath := index (split (index (split $destination "#") 0) "?") 0 -}}
+  {{- $suffix := strings.TrimPrefix $rawPath $destination -}}
+  {{- $lookupPath := $rawPath -}}
+  {{- with try (urls.Parse $rawPath) -}}
+    {{- with .Value -}}{{- $lookupPath = .Path -}}{{- end -}}
+  {{- end -}}
+  {{- /* A URL already rooted at the site's base path must not acquire that
+        path a second time when we regenerate its public URL. */ -}}
+  {{- $basePath := (urls.Parse $page.Site.BaseURL).Path -}}
+  {{- if and (hasPrefix $rawPath "/") (ne $basePath "/") (hasPrefix $lookupPath $basePath) -}}
+    {{- $lookupPath = strings.TrimPrefix $basePath $lookupPath -}}
+  {{- end -}}
+  {{- $lookupPath = strings.TrimPrefix "/" $lookupPath -}}
+  {{- $lookupPath = path.Clean $lookupPath -}}
+
+  {{- if and (ne $lookupPath ".") (ne $lookupPath "..") (not (hasPrefix $lookupPath "../")) -}}
+    {{- $resource := false -}}
+    {{- if not (hasPrefix $rawPath "/") -}}
+      {{- with $page.Resources.Get $lookupPath -}}
+        {{- $resource = . -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if not $resource -}}
+      {{- with resources.Get $lookupPath -}}
+        {{- $resource = . -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if $resource -}}
+      {{- $src = printf "%s%s" $resource.RelPermalink $suffix -}}
+      {{- $absoluteURL = printf "%s%s" $resource.Permalink $suffix -}}
+      {{- $found = true -}}
+      {{- /* Width and Height are image-resource methods; SVG and other
+            non-raster resources may not implement them. */ -}}
+      {{- with try $resource.Width -}}
+        {{- with .Value -}}{{- $width = . -}}{{- end -}}
+      {{- end -}}
+      {{- with try $resource.Height -}}
+        {{- with .Value -}}{{- $height = . -}}{{- end -}}
+      {{- end -}}
+    {{- else -}}
+      {{- /* Static files are copied as-is, so their URL must be built with
+            relURL/absURL to honor a baseURL containing a path. */ -}}
+      {{- $staticPath := printf "static/%s" $lookupPath -}}
+      {{- if fileExists $staticPath -}}
+        {{- $src = printf "%s%s" (relURL $lookupPath) $suffix -}}
+        {{- $absoluteURL = printf "%s%s" (absURL $lookupPath) $suffix -}}
+        {{- $found = true -}}
+        {{- with try (images.Config $staticPath) -}}
+          {{- with .Value -}}
+            {{- $width = .Width -}}
+            {{- $height = .Height -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and (not $found) (ne $rawPath "") (not (hasPrefix $rawPath "/")) -}}
+    {{- /* A relative URL must resolve against the normal page, otherwise
+          an AMP output path changes its target. */ -}}
+    {{- $pageURL := $page.Permalink -}}
+    {{- with $page.OutputFormats.Get "HTML" -}}{{- $pageURL = .Permalink -}}{{- end -}}
+    {{- with try ((urls.Parse $pageURL).ResolveReference (urls.Parse $destination)) -}}
+      {{- with .Value -}}{{- $src = .String -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return (dict
+  "src" $src
+  "absoluteURL" $absoluteURL
+  "width" $width
+  "height" $height
+  "hasDimensions" (and (gt $width 0) (gt $height 0))
+  "found" $found
+) -}}
