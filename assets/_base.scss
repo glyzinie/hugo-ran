@@ -19,24 +19,10 @@ body {
 	box-sizing: border-box;
 }
 
-@media screen and (max-width: tokens.$breakpoint-mobile) {
-	.container {
-		width: 85%;
-		padding: 0;
-	}
-}
-
-
 h1, h2, h3, h4, h5, h6 {
 	line-height: 1.7;
 	margin: 1em 0 15px;
 	padding: 0;
-}
-
-@media screen and (max-width: tokens.$breakpoint-mobile) {
-	h1, h2, h3, h4, h5, h6 {
-		line-height: 1.4;
-	}
 }
 
 h1, h2, h3, h5 {
@@ -55,16 +41,11 @@ h2 {
 	font-size: 24px;
 }
 
-h3 {
+h3, h4 {
 	font-size: 20px;
 }
 
-h4 {
-	font-size: 20px;
-	color: tokens.$color-muted;
-}
-
-h6 {
+h4, h6 {
 	color: tokens.$color-muted;
 }
 
@@ -119,6 +100,8 @@ ol, ul {
 			display: inline-block;
 			box-sizing: border-box;
 			text-align: right;
+			padding-right: 0.3em;
+			font-family: inherit;
 		}
 	}
 }
@@ -126,8 +109,6 @@ ol, ul {
 ul {
 	> li:before {
 		content: "\2022";
-		padding-right: 0.3em;
-		font-family: inherit;
 		font-size: 1.4em;
 		line-height: 1.2;
 	}
@@ -139,8 +120,6 @@ ol {
 	> li:before {
 		counter-increment: section;
 		content: counter(section) ".";
-		padding-right: 0.3em;
-		font-family: inherit;
 		font-size: 1em;
 		line-height: inherit;
 	}
@@ -181,15 +160,6 @@ dt {
 dd {
 	margin-left: 200px;
 	margin-bottom: 0.4em;
-}
-
-@media screen and (max-width: tokens.$breakpoint-mobile) {
-	dt {
-		width: 120px;
-	}
-	dd {
-		margin-left: 140px;
-	}
 }
 
 // Table
@@ -291,4 +261,23 @@ img, amp-img {
 
 .right {
 	text-align: right;
+}
+
+@media screen and (max-width: tokens.$breakpoint-mobile) {
+	.container {
+		width: 85%;
+		padding: 0;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		line-height: 1.4;
+	}
+
+	dt {
+		width: 120px;
+	}
+
+	dd {
+		margin-left: 140px;
+	}
 }
