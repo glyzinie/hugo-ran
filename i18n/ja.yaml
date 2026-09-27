@@ -1,0 +1,26 @@
+- id: breadcrumbs
+  translation: パンくずリスト
+- id: publishedOn
+  translation: 公開
+- id: updatedOn
+  translation: 更新
+- id: by
+  translation: 著者
+- id: tags
+  translation: タグ
+- id: relatedPages
+  translation: 関連ページ
+- id: articleNavigation
+  translation: 記事の移動
+- id: pagination
+  translation: ページの移動
+- id: previousPage
+  translation: 前へ
+- id: nextPage
+  translation: 次へ
+- id: readMore
+  translation: "{{ .Title }}の続きを読む"
+- id: dateFormat
+  translation: 2006年1月2日
+- id: pageNumber
+  translation: "{{ . }}ページ目"

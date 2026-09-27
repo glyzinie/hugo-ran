@@ -1,0 +1,24 @@
+{{- $page := . -}}
+{{- $dates := partial "templates/dates.html" $page -}}
+{{- $author := partial "templates/author.html" $page -}}
+{{- $tags := $page.GetTerms "tags" -}}
+{{- if or $dates $author $tags -}}
+<div class="meta">
+	{{- with index $dates "published" }}
+	<span class="meta-item"><span class="meta-label">{{ i18n "publishedOn" }}</span> <time class="date" datetime="{{ .Format "2006-01-02T15:04:05-07:00" }}">{{ .Format ($page.Site.Params.dateformat | default (i18n "dateFormat")) }}</time></span>
+	{{- end }}
+	{{- with index $dates "modified" }}
+	<span class="meta-item"><span class="meta-label">{{ i18n "updatedOn" }}</span> <time class="date" datetime="{{ .Format "2006-01-02T15:04:05-07:00" }}">{{ .Format ($page.Site.Params.dateformat | default (i18n "dateFormat")) }}</time></span>
+	{{- end }}
+	{{- with $author }}
+	<span class="meta-item byline">{{ i18n "by" }} {{ with .url }}<a href="{{ . }}">{{ $author.name }}</a>{{ else }}{{ $author.name }}{{ end }}</span>
+	{{- end }}
+	{{- with $tags }}
+	<ul class="tag" aria-label="{{ i18n "tags" }}">
+		{{- range . }}
+		<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+		{{- end }}
+	</ul>
+	{{- end }}
+</div>
+{{- end -}}

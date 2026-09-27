@@ -1,0 +1,15 @@
+{{- $robots := .Site.Params.robots | default "" -}}
+{{- if isset .Params "robots" -}}{{- $robots = .Params.robots -}}{{- end -}}
+{{- if reflect.IsSlice $robots -}}{{- $robots = delimit $robots ", " -}}{{- end -}}
+{{- if or (eq .Kind "404") .Params.noindex -}}
+	{{- $directives := slice "noindex" -}}
+	{{- range split $robots "," -}}
+		{{- $directive := . | strings.TrimSpace -}}
+		{{- if and $directive (not (in (slice "index" "noindex" "all") (lower $directive))) -}}
+			{{- $directives = $directives | append $directive -}}
+		{{- end -}}
+	{{- end -}}
+	{{- if not $robots -}}{{- $directives = $directives | append "follow" -}}{{- end -}}
+	{{- $robots = delimit (uniq $directives) ", " -}}
+{{- end -}}
+{{- return $robots -}}

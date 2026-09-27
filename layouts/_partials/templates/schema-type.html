@@ -1,0 +1,17 @@
+{{- $type := "WebPage" -}}
+{{- if .IsHome -}}
+	{{- $type = "WebSite" -}}
+	{{- with partial "templates/paginator.html" . -}}
+		{{- if gt .PageNumber 1 -}}{{- $type = "CollectionPage" -}}{{- end -}}
+	{{- end -}}
+{{- else if in (slice "section" "taxonomy" "term") .Kind -}}
+	{{- $type = "CollectionPage" -}}
+{{- else if and .IsPage (in .Site.MainSections .Type) -}}
+	{{- $type = "BlogPosting" -}}
+{{- end -}}
+{{- with .Params.schemaType -}}
+	{{- if in (slice "BlogPosting" "Article" "NewsArticle" "WebPage" "AboutPage" "ContactPage") . -}}
+		{{- $type = . -}}
+	{{- end -}}
+{{- end -}}
+{{- return $type -}}

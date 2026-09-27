@@ -1,5 +1,17 @@
-{{- $description := .Site.Params.description | default "" -}}
-{{- if .IsPage -}}
-	{{- $description = .Params.Description | default (.Summary | plainify) -}}
+{{- $description := .Description | default "" -}}
+{{- $generated := false -}}
+{{- if and (not $description) .IsPage -}}
+	{{- $description = .Summary | plainify | htmlUnescape | strings.TrimSpace -}}
+	{{- $generated = true -}}
 {{- end -}}
+{{- if not $description -}}
+	{{- $description = .Plain | strings.TrimSpace -}}
+	{{- $generated = true -}}
+{{- end -}}
+{{- if not $description -}}
+	{{- $description = .Site.Params.description | default "" -}}
+	{{- $generated = false -}}
+{{- end -}}
+{{- $description = $description | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace -}}
+{{- if $generated -}}{{- $description = $description | truncate 160 -}}{{- end -}}
 {{- return $description -}}

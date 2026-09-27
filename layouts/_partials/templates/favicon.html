@@ -1,1 +1,12 @@
-{{- return (absURL (.Site.Params.Favicon | default (.Site.Params.Logo | default "img/favicon.png"))) -}}
+{{- $url := "" -}}
+{{- $candidates := slice -}}
+{{- with .Site.Params.favicon -}}{{- $candidates = $candidates | append . -}}{{- end -}}
+{{- with .Site.Params.logo -}}{{- $candidates = $candidates | append . -}}{{- end -}}
+{{- $candidates = $candidates | append "img/favicon.png" -}}
+{{- range $candidates -}}
+	{{- if not $url -}}
+		{{- $image := partial "images/resolve.html" (dict "page" $.Site.Home "destination" .) -}}
+		{{- if $image.found -}}{{- $url = $image.absoluteURL -}}{{- end -}}
+	{{- end -}}
+{{- end -}}
+{{- return $url -}}

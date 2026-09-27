@@ -26,6 +26,10 @@
 	letter-spacing: 1px;
 }
 
+.site-name a {
+	color: inherit;
+}
+
 .site-description {
 	margin: -5px 0 0 0;
 	color: #666;
@@ -52,10 +56,56 @@
 .posts > .post {
 	padding-bottom: 2em;
 	border-bottom: 1px solid tokens.$color-surface;
+
+	> h2 {
+		font-size: 30px;
+		margin-bottom: .1em;
+
+		a {
+			color: inherit;
+		}
+	}
+
 	&:last-child {
 		padding-bottom: 1em;
 		border-bottom: none;
 	}
+}
+
+.breadcrumbs {
+	margin: 1em 0 0;
+	font-size: 14px;
+	color: tokens.$color-muted;
+
+	ol {
+		display: flex;
+		flex-wrap: wrap;
+		gap: .4em;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	li {
+		margin: 0;
+		list-style: none;
+
+		&:before {
+			content: none;
+		}
+
+		& + li:before {
+			content: "/";
+			position: static;
+			margin: 0 .4em 0 0;
+			width: auto;
+			padding: 0;
+		}
+	}
+}
+
+.list-title {
+	margin-bottom: .1em;
 }
 
 .post {
@@ -63,11 +113,23 @@
 		margin-bottom: .1em;
 	}
 
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0 .65em;
+	}
+
+	.meta-item {
+		font-weight: 300;
+		font-size: 14px;
+		color: tokens.$color-muted;
+	}
+
 	.date {
 		font-weight: 300;
 		font-size: 14px;
 		color: tokens.$color-muted;
-		margin-right: 3px;
 	}
 
 	.tag {
@@ -99,6 +161,15 @@
 
 	.read-more {
 		font-size: 15px;
+	}
+}
+
+.related {
+	margin-top: 2em;
+	border-top: 1px solid tokens.$color-surface;
+
+	h2 {
+		font-size: 20px;
 	}
 }
 

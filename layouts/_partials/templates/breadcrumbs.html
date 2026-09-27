@@ -1,0 +1,18 @@
+{{- $items := slice -}}
+{{- if and (not .IsHome) (ne .Kind "404") -}}
+	{{- range .Ancestors.Reverse -}}
+		{{- $name := .Title -}}
+		{{- if .IsHome -}}{{- $name = .Site.Title -}}{{- end -}}
+		{{- $url := .Permalink -}}
+		{{- with .OutputFormats.Get "HTML" -}}{{- $url = .Permalink -}}{{- end -}}
+		{{- $items = $items | append (dict "name" $name "url" $url) -}}
+	{{- end -}}
+	{{- $name := .Title -}}
+	{{- with partial "templates/paginator.html" . -}}
+		{{- if gt .PageNumber 1 -}}
+			{{- $name = printf "%s · %s" $name (i18n "pageNumber" .PageNumber | default (printf "Page %d" .PageNumber)) -}}
+		{{- end -}}
+	{{- end -}}
+	{{- $items = $items | append (dict "name" $name "url" (partial "templates/canonical.html" .)) -}}
+{{- end -}}
+{{- return $items -}}

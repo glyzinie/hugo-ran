@@ -1,0 +1,10 @@
+{{- /* Initialize pagination before head metadata and reuse the same collection in the body. */ -}}
+{{- $paginator := false -}}
+{{- if in (slice "home" "section" "term") .Kind -}}
+	{{- $pages := .RegularPages -}}
+	{{- if .IsHome -}}
+		{{- $pages = where .Site.RegularPages "Type" "in" .Site.MainSections -}}
+	{{- end -}}
+	{{- $paginator = .Paginate $pages -}}
+{{- end -}}
+{{- return $paginator -}}

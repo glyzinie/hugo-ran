@@ -7,6 +7,7 @@
     <link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
 {{ partial "head/resource-hints.html" . }}
 
+	{{ partial "head/links.html" . }}
 	{{ partial "head/metadata.html" . }}
 
 	<style amp-custom>
@@ -28,9 +29,6 @@
 	<script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-1.0.js"></script>
 {{ end }}
 
-{{ range .AlternativeOutputFormats }}
-	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
-{{ end }}
 	<title>{{ partial "templates/title.html" . }}</title>
 
 	{{ partial "json-ld.html" . }}

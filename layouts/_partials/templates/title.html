@@ -2,4 +2,9 @@
 {{- if not .IsHome -}}
 	{{- $title = printf "%s | %s" .Title $title -}}
 {{- end -}}
+{{- with partial "templates/paginator.html" . -}}
+	{{- if gt .PageNumber 1 -}}
+		{{- $title = printf "%s | %s" $title (i18n "pageNumber" .PageNumber | default (printf "Page %d" .PageNumber)) -}}
+	{{- end -}}
+{{- end -}}
 {{- return $title -}}

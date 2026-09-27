@@ -1,0 +1,21 @@
+{{- $url := .url -}}
+{{- $sourceURL := .source -}}
+{{- with .paginator -}}
+	{{- if gt .PageNumber 1 -}}
+		{{- /* Map the current output's pagination suffix to the requested output. */ -}}
+		{{- $source := strings.TrimSuffix "/" $sourceURL -}}
+		{{- $target := strings.TrimSuffix "/" $url -}}
+		{{- if not (hasPrefix .URL $source) -}}
+			{{- /* Hugo's ugly URLs replace the first page's .html suffix. */ -}}
+			{{- $source = strings.TrimSuffix (path.Ext $source) $source -}}
+			{{- $target = strings.TrimSuffix (path.Ext $target) $target -}}
+		{{- end -}}
+		{{- if not (hasPrefix .URL $source) -}}
+			{{- /* Some formats keep an index/baseName file inside every pager directory. */ -}}
+			{{- $source = strings.TrimSuffix "/" (path.Dir $source) -}}
+			{{- $target = strings.TrimSuffix "/" (strings.TrimSuffix (path.Base $target) $target) -}}
+		{{- end -}}
+		{{- $url = printf "%s%s" $target (strings.TrimPrefix $source .URL) -}}
+	{{- end -}}
+{{- end -}}
+{{- return $url -}}

@@ -1,1 +1,2 @@
-{{- return (absURL (.Params.Thumbnail | default (.Site.Params.Thumbnail | default "img/thumb.png"))) -}}
+{{- $image := partial "templates/social-image.html" . -}}
+{{- return ($image.url | default "") -}}

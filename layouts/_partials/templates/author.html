@@ -1,0 +1,38 @@
+{{- $params := .Site.Params.author | default dict -}}
+{{- if isset .Params "author" -}}
+	{{- $params = .Params.author -}}
+{{- end -}}
+{{- $author := dict -}}
+{{- if reflect.IsMap $params -}}
+	{{- with $params.name -}}
+		{{- $type := "Person" -}}
+		{{- if eq $params.type "Organization" -}}{{- $type = "Organization" -}}{{- end -}}
+		{{- $author = dict "@type" $type "name" . -}}
+		{{- with $params.url -}}
+			{{- $author = merge $author (dict "url" (. | absURL)) -}}
+		{{- end -}}
+		{{- $sameAs := slice -}}
+		{{- with $params.sameAs -}}
+			{{- if reflect.IsSlice . -}}{{- $sameAs = . -}}{{- else -}}{{- $sameAs = slice . -}}{{- end -}}
+		{{- end -}}
+		{{- range $service, $pattern := dict
+			"twitter" "https://twitter.com/%s"
+			"github" "https://github.com/%s"
+			"stackoverflow" "https://stackoverflow.com/%s"
+			"linkedin" "https://www.linkedin.com/in/%s"
+			"facebook" "https://www.facebook.com/%s"
+			"instagram" "https://instagram.com/%s"
+			"pinterest" "https://www.pinterest.com/%s"
+			"tumblr" "https://%s.tumblr.com"
+			"youtube" "https://www.youtube.com/%s"
+		-}}
+			{{- with index $params $service -}}
+				{{- $sameAs = $sameAs | append (printf $pattern .) -}}
+			{{- end -}}
+		{{- end -}}
+		{{- with $sameAs -}}{{- $author = merge $author (dict "sameAs" (uniq .)) -}}{{- end -}}
+	{{- end -}}
+{{- else if and $params (eq (printf "%T" $params) "string") -}}
+	{{- $author = dict "@type" "Person" "name" $params -}}
+{{- end -}}
+{{- return $author -}}

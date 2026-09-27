@@ -1,47 +1,54 @@
-{{- $authorParams := .Site.Params.Author | default dict -}}
-{{- $sameAs := slice -}}
-{{- range $service, $url := dict
-	"twitter" "https://twitter.com/%s"
-	"github" "https://github.com/%s"
-	"stackoverflow" "http://stackoverflow.com/%s"
-	"linkedin" "https://www.linkedin.com/in/%s"
-	"facebook" "https://www.facebook.com/%s"
-	"instagram" "https://instagram.com/%s"
-	"pinterest" "https://www.pinterest.com/%s"
-	"tumblr" "https://%s.tumblr.com"
-	"youtube" "https://www.youtube.com/%s"
--}}
-	{{- with index $authorParams $service -}}
-		{{- $sameAs = $sameAs | append (printf $url .) -}}
+{{- if ne .Kind "404" -}}
+	{{- $canonical := partial "templates/canonical.html" . -}}
+	{{- $type := partial "templates/schema-type.html" . -}}
+	{{- $isArticle := in (slice "BlogPosting" "Article" "NewsArticle") $type -}}
+	{{- $name := .Title -}}
+	{{- if .IsHome -}}{{- $name = .Site.Title -}}{{- end -}}
+	{{- $schema := dict
+		"@context" "https://schema.org"
+		"@type" $type
+		"@id" $canonical
+		"url" $canonical
+		"name" $name
+		"inLanguage" (.Site.LanguageCode | default .Site.Language.Lang)
+	-}}
+	{{- with partial "templates/description.html" . -}}
+		{{- $schema = merge $schema (dict "description" .) -}}
 	{{- end -}}
-{{- end -}}
-{{- $author := dict
-	"@type" "Person"
-	"name" ($authorParams.name | default .Site.Title)
-	"url" ($authorParams.url | default .Site.BaseURL)
-	"sameAs" $sameAs
--}}
-{{- $publisher := dict "@type" "Organization" "name" .Site.Title -}}
-{{- with .Site.Params.Logo -}}
-	{{- $publisher = merge $publisher (dict "logo" (dict "@type" "ImageObject" "url" (absURL .))) -}}
-{{- end -}}
-{{- $schema := dict
-	"@context" "https://schema.org"
-	"inLanguage" (.Site.LanguageCode | default "en")
-	"description" (partial "templates/description.html" .)
-	"author" $author
-	"publisher" $publisher
-	"datePublished" (.PublishDate.Format "2006-01-02T15:04:05-07:00")
-	"dateModified" (.Lastmod.Format "2006-01-02T15:04:05-07:00")
--}}
-{{- if .IsHome -}}
-	{{- $schema = merge $schema (dict "@type" "WebSite" "name" .Site.Title "url" .Permalink) -}}
-{{- else if .IsPage -}}
-	{{- $schema = merge $schema (dict
-		"@type" "BlogPosting"
-		"mainEntityOfPage" (dict "@type" "WebPage" "@id" .Site.BaseURL)
-		"headline" .Title
-		"image" (slice (dict "@type" "ImageObject" "url" (partial "templates/thumb.html" .)))
-	) -}}
-{{- end -}}
+	{{- if $isArticle -}}
+		{{- $schema = merge $schema (dict "headline" .Title "mainEntityOfPage" (dict "@type" "WebPage" "@id" $canonical)) -}}
+	{{- end -}}
+	{{- if .IsPage -}}
+		{{- with partial "templates/author.html" . -}}
+			{{- $schema = merge $schema (dict "author" .) -}}
+		{{- end -}}
+		{{- $dates := partial "templates/dates.html" . -}}
+		{{- with $dates.published -}}{{- $schema = merge $schema (dict "datePublished" (.Format "2006-01-02T15:04:05-07:00")) -}}{{- end -}}
+		{{- with $dates.modified -}}{{- $schema = merge $schema (dict "dateModified" (.Format "2006-01-02T15:04:05-07:00")) -}}{{- end -}}
+	{{- end -}}
+	{{- with partial "templates/thumb.html" . -}}
+		{{- $schema = merge $schema (dict "image" (slice .)) -}}
+	{{- end -}}
+	{{- /* Only assert a publisher when the site explicitly provides one. */ -}}
+	{{- with .Site.Params.publisher -}}
+		{{- with .name -}}
+			{{- $publisher := dict "@type" "Organization" "name" . -}}
+			{{- with $.Site.Params.publisher.url -}}{{- $publisher = merge $publisher (dict "url" (. | absURL)) -}}{{- end -}}
+			{{- with $.Site.Params.publisher.logo -}}
+				{{- $image := partial "images/resolve.html" (dict "page" $.Site.Home "destination" .) -}}
+				{{- if $image.found -}}{{- $publisher = merge $publisher (dict "logo" (dict "@type" "ImageObject" "url" $image.absoluteURL)) -}}{{- end -}}
+			{{- end -}}
+			{{- $schema = merge $schema (dict "publisher" $publisher) -}}
+		{{- end -}}
+	{{- end }}
 <script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
+	{{- $breadcrumbs := partial "templates/breadcrumbs.html" . -}}
+	{{- if gt (len $breadcrumbs) 1 -}}
+		{{- $items := slice -}}
+		{{- range $index, $item := $breadcrumbs -}}
+			{{- $items = $items | append (dict "@type" "ListItem" "position" (add $index 1) "name" $item.name "item" $item.url) -}}
+		{{- end -}}
+		{{- $breadcrumbSchema := dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items }}
+<script type="application/ld+json">{{ $breadcrumbSchema | jsonify | safeJS }}</script>
+	{{- end -}}
+{{- end }}

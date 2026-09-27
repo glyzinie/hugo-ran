@@ -1,20 +1,19 @@
 {{ define "main" }}
+{{ partial "content/breadcrumbs.html" . }}
 <article class="page">
-	<h1>Tags</h1>
-	<div class="entry">
-		<div class="tags">
-			<ul class="label">
-				{{ $data := .Data }}
-				{{ range $key, $value := .Data.Terms }}
-				<li>
-					<a href="{{ $data.Plural | relURL }}/{{ $key | urlize }}/">
-						<span>{{ $key }}</span>
-						<span class="count">{{ len $value }}</span>
-					</a>
-				</li>
-				{{ end }}
-			</ul>
-		</div>
+	<h1>{{ .Title }}</h1>
+	{{ with .Content }}<div class="entry">{{ . }}</div>{{ end }}
+	<div class="tags">
+		<ul class="label">
+			{{ range .Data.Terms.Alphabetical }}
+			<li>
+				<a href="{{ .Page.RelPermalink }}">
+					<span>{{ .Page.LinkTitle }}</span>
+					<span class="count">{{ .Count }}</span>
+				</a>
+			</li>
+			{{ end }}
+		</ul>
 	</div>
 </article>
 {{ end }}

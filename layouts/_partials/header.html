@@ -3,15 +3,16 @@
 	<header class="masthead clearfix">
 		<div class="container">
 			{{ with .Site.Params.Logo }}
-			<a href="{{ $.page.Site.BaseURL }}" class="site-avatar"{{ if not $isAMP }} alt="Logo"{{ end }}>
-				{{ if $isAMP }}<amp-img src="{{ . }}" width="70" height="70" layout="responsive" alt="Logo"></amp-img>{{ else }}<img src="{{ . }}">{{ end }}
+			{{ $logo := partial "images/resolve.html" (dict "page" $.page.Site.Home "destination" .) }}
+			<a href="{{ $.page.Site.BaseURL }}" class="site-avatar">
+				{{ if $isAMP }}<amp-img src="{{ $logo.src }}" width="70" height="70" layout="responsive" alt="{{ $.page.Site.Title }}"></amp-img>{{ else }}<img src="{{ $logo.src }}" width="70" height="70" alt="{{ $.page.Site.Title }}">{{ end }}
 			</a>
 			{{ end }}
 
 			<div class="site-info">
-				<h1 class="site-name">
+				{{ if .IsHome }}<h1 class="site-name">{{ else }}<p class="site-name">{{ end }}
 					<a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
-				</h1>
+				{{ if .IsHome }}</h1>{{ else }}</p>{{ end }}
 				{{ with .Site.Params.Description }}
 				<p class="site-description">{{ . }}</p>
 				{{ end }}

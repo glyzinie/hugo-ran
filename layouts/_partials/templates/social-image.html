@@ -1,0 +1,19 @@
+{{- $selected := dict -}}
+{{- $candidates := slice -}}
+{{- with .Params.thumbnail -}}
+	{{- $candidates = $candidates | append (dict "page" $ "destination" . "alt" ($.Params.thumbnailAlt | default "")) -}}
+{{- end -}}
+{{- with .Site.Params.thumbnail -}}
+	{{- $candidates = $candidates | append (dict "page" $.Site.Home "destination" . "alt" ($.Site.Params.thumbnailAlt | default "")) -}}
+{{- end -}}
+{{- /* Retain the legacy default only when the file actually exists. */ -}}
+{{- $candidates = $candidates | append (dict "page" .Site.Home "destination" "img/thumb.png" "alt" "") -}}
+{{- range $candidates -}}
+	{{- if not $selected -}}
+		{{- $image := partial "images/resolve.html" . -}}
+		{{- if $image.found -}}
+			{{- $selected = dict "url" $image.absoluteURL "alt" .alt -}}
+		{{- end -}}
+	{{- end -}}
+{{- end -}}
+{{- return $selected -}}

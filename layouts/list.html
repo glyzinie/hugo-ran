@@ -1,49 +1,46 @@
 {{ define "main" }}
-<article class="posts">
-	{{ $pages := .RegularPages }}
-	{{ if .IsHome }}{{ $pages = where .Site.RegularPages "Type" "in" .Site.Params.MainSections }}{{ end }}
-	{{ $paginator := .Paginate $pages }}
-	{{ range $paginator.Pages }}
-	<section class="post">
-		<h1>
-			<a href="{{ .Permalink }}">{{ .Title }}</a>
-		</h1>
+{{ partial "content/breadcrumbs.html" . }}
+{{ if .IsHome }}
+	{{ if ne .Title .Site.Title }}<h2 class="list-title">{{ .Title }}</h2>{{ end }}
+{{ else }}
+	<h1 class="list-title">{{ .Title }}</h1>
+{{ end }}
+{{ with .Content }}<div class="list-intro entry">{{ . }}</div>{{ end }}
 
-		<div class="meta">
-			<time class="date" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" | html }}">
-				{{ .Date.Format ( default .Site.Params.dateformat "Jan 2, 2006") }}
-			</time>
-
-		{{ with .Params.tags }}
-			<ul class="tag">
-			{{ range . }}
-				<li><a href="{{ "tags" | absURL }}/{{ . | urlize }}">{{ . }}</a></li>
-			{{ end }}
-			</ul>
+{{ $isAMP := false }}
+{{ with .OutputFormats.Get "AMP" }}{{ $isAMP = eq $.RelPermalink .RelPermalink }}{{ end }}
+{{ $paginator := partial "templates/paginator.html" . }}
+{{ with $paginator }}
+<div class="posts">
+	{{ range .Pages }}
+	<article class="post">
+		<h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+		{{ partial "content/meta.html" . }}
+		{{ $summary := .Summary }}
+		{{ $summaryText := $summary | plainify | strings.TrimSpace }}
+		{{ if $summaryText }}
+		<div class="entry">{{ if $isAMP }}<p>{{ $summaryText }}</p>{{ else }}{{ $summary }}{{ end }}</div>
+		{{ else }}
+			{{ with partial "templates/description.html" . }}<div class="entry"><p>{{ . }}</p></div>{{ end }}
 		{{ end }}
-		</div>
-
-		<div class="entry">
-			{{ plainify .Summary }}
-		</div>
-
-		<a href="{{ .Permalink }}" class="read-more">Read More</a>
-	</section>
-	{{ end }}
-</article>
-
-{{ if gt .Paginator.TotalPages 1 }}
-<div class="pagination">
-	{{ if .Paginator.HasPrev }}
-	<span class="left">
-		<a href="{{ .Paginator.Prev.URL }}" class="prev">&#12298; Previous</a>
-	</span>
-	{{ end }}
-	{{ if .Paginator.HasNext }}
-	<span class="right">
-		<a href="{{ .Paginator.Next.URL }}" class="next">Next &#12299;</a>
-	</span>
+		<a href="{{ .RelPermalink }}" class="read-more">{{ i18n "readMore" (dict "Title" .LinkTitle) }}</a>
+	</article>
 	{{ end }}
 </div>
+
+{{ if gt .TotalPages 1 }}
+<nav class="pagination" aria-label="{{ i18n "pagination" }}">
+	{{ if .HasPrev }}
+	<span class="left">
+		<a href="{{ .Prev.URL }}" class="prev">&#12298; {{ i18n "previousPage" }}</a>
+	</span>
+	{{ end }}
+	{{ if .HasNext }}
+	<span class="right">
+		<a href="{{ .Next.URL }}" class="next">{{ i18n "nextPage" }} &#12299;</a>
+	</span>
+	{{ end }}
+</nav>
+{{ end }}
 {{ end }}
 {{ end }}

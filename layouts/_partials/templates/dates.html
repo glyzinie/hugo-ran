@@ -1,0 +1,10 @@
+{{- $dates := dict -}}
+{{- if .IsPage -}}
+	{{- if not .PublishDate.IsZero -}}
+		{{- $dates = merge $dates (dict "published" .PublishDate) -}}
+	{{- end -}}
+	{{- if and (not .Lastmod.IsZero) (.Lastmod.After .PublishDate) -}}
+		{{- $dates = merge $dates (dict "modified" .Lastmod) -}}
+	{{- end -}}
+{{- end -}}
+{{- return $dates -}}

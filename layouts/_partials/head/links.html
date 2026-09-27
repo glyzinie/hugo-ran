@@ -1,0 +1,19 @@
+{{- $paginator := partial "templates/paginator.html" . -}}
+<link rel="canonical" href="{{ partial "templates/canonical.html" . }}">
+{{- range .AlternativeOutputFormats -}}
+	{{- if ne .Rel "canonical" -}}
+		{{- $url := .Permalink -}}
+		{{- if eq (lower .Name) "amp" -}}
+			{{- $url = partial "templates/pager-url.html" (dict "url" $url "source" $.RelPermalink "paginator" $paginator) -}}
+		{{- end }}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ $url }}" title="{{ $.Site.Title }}">
+	{{- end -}}
+{{- end -}}
+{{- if and .IsTranslated (or (not $paginator) (eq $paginator.PageNumber 1)) -}}
+	{{- range .AllTranslations -}}
+		{{- $language := .Language.LanguageCode | default .Language.Lang -}}
+		{{- with .OutputFormats.Get "HTML" }}
+<link rel="alternate" hreflang="{{ $language }}" href="{{ .Permalink }}">
+		{{- end -}}
+	{{- end -}}
+{{- end }}

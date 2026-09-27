@@ -1,0 +1,26 @@
+- id: breadcrumbs
+  translation: Breadcrumbs
+- id: publishedOn
+  translation: Published
+- id: updatedOn
+  translation: Updated
+- id: by
+  translation: By
+- id: tags
+  translation: Tags
+- id: relatedPages
+  translation: Related pages
+- id: articleNavigation
+  translation: Article navigation
+- id: pagination
+  translation: Page navigation
+- id: previousPage
+  translation: Previous
+- id: nextPage
+  translation: Next
+- id: readMore
+  translation: "Read more: {{ .Title }}"
+- id: dateFormat
+  translation: Jan 2, 2006
+- id: pageNumber
+  translation: "Page {{ . }}"

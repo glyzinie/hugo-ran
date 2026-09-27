@@ -6,10 +6,7 @@
 
 {{ partial "head/resource-hints.html" . }}
 
-	<link rel="canonical" href="{{ .Permalink }}">
-{{ range .AlternativeOutputFormats }}
-	<link rel="{{ .Rel }}" type="{{ .MediaType.Type | html }}" href="{{ .Permalink | safeURL }}" title="{{ $.Site.Title | safeHTML }}">
-{{ end }}
+	{{ partial "head/links.html" . }}
 
 	{{ partial "head/metadata.html" . }}
 
@@ -20,6 +17,7 @@
 	{{ partial "json-ld.html" . }}
 
 {{ partial "googleanalytics.html" . }}
+	{{ partial "head.html" . }}
 </head>
 <body>
 	{{ partial "header.html" (dict "page" . "isAMP" false) }}

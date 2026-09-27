@@ -1,23 +1,8 @@
 {{- $page := .page -}}
-{{- $isAMP := .isAMP -}}
+{{ partial "content/breadcrumbs.html" $page }}
 <article class="post">
-{{ if $isAMP }}	<h1>
-		<a href="{{ $page.Permalink }}">{{ $page.Title }}</a>
-	</h1>{{ else }}	<h1>{{ $page.Title }}</h1>{{ end }}
-
-	<div class="meta">
-		<time class="date" datetime="{{ $page.Date.Format "2006-01-02T15:04:05-07:00" | html }}">
-			{{ $page.Date.Format ( default $page.Site.Params.dateformat "Jan 2, 2006") }}
-		</time>
-
-		{{ with $page.Params.tags }}
-		<ul class="tag">
-			{{ range . }}
-			<li><a href="{{ "tags" | absURL }}/{{ . | urlize }}">{{ . }}</a></li>
-			{{ end }}
-		</ul>
-		{{ end }}
-	</div>
+	<h1>{{ $page.Title }}</h1>
+	{{ partial "content/meta.html" $page }}
 
 {{ if $page.Params.toc }}{{ $page.TableOfContents }}{{ end }}
 
@@ -26,15 +11,29 @@
 	</div>
 </article>
 
-<div class="pagination">
+{{- $related := first 3 ($page.Site.RegularPages.Related $page) -}}
+{{- with $related }}
+<aside class="related" aria-labelledby="related-pages-heading">
+	<h2 id="related-pages-heading">{{ i18n "relatedPages" }}</h2>
+	<ul>
+		{{- range . }}
+		<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+		{{- end }}
+	</ul>
+</aside>
+{{- end }}
+
+{{ if or $page.NextInSection $page.PrevInSection }}
+<nav class="pagination" aria-label="{{ i18n "articleNavigation" }}">
 	{{ with $page.NextInSection }}
 	<span class="left">
-		<a href="{{ .Permalink }}">&#12298; {{ .Title }}</a>
+		<a href="{{ .RelPermalink }}">&#12298; {{ .LinkTitle }}</a>
 	</span>
 	{{ end }}
 	{{ with $page.PrevInSection }}
 	<span class="right">
-		<a href="{{ .Permalink }}">{{ .Title }} &#12299;</a>
+		<a href="{{ .RelPermalink }}">{{ .LinkTitle }} &#12299;</a>
 	</span>
 	{{ end }}
-</div>
+</nav>
+{{ end }}
